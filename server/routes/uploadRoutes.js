@@ -1,35 +1,57 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
 const Upload = require('../models/Upload');
 
-// Register
-router.post('/upload', async (req, res) => {
-    try {
-        const { projectName, description, file } = req.body;
+// Multer Storage Configuration
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
 
-        if (!projectName || !description || !file) {
-            return res.status(400).json({ message: 'All fields are required' });
+const upload = multer({ storage: storage });
+
+// Upload Route (Supports single file upload)
+router.post('/', upload.single('file'), async (req, res) => {
+    console.log('Body:', req.body);
+    console.log('File:', req.file);
+
+    try {
+        const { projectName, description } = req.body;
+
+        if (!projectName || !description) {
+            return res.status(400).json({ message: 'Project name and description are required' });
         }
 
-        // Check if user exists
-        let upload = await Upload.findOne({ projectName });
-        if (upload) return res.status(400).json({ message: 'Project already exists' });
+        if (!req.file) {
+            return res.status(400).json({ message: 'Please upload a file' });
+        }
 
+        // Check if project exists
+        let existingProject = await Upload.findOne({ projectName });
+        if (existingProject) return res.status(400).json({ message: 'Project already exists' });
 
-        upload = new Upload({
+        const newUpload = new Upload({
             projectName,
             description,
-            file
+            file: req.file.path // Storing the file path in DB
         });
 
-        await upload.save();
+        await newUpload.save();
 
-        res.json({ status: "success", message: "Project uploaded successfully", data: upload });
+        res.json({ 
+            status: "success", 
+            message: "Project uploaded successfully", 
+            data: newUpload 
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
-
-
 
 module.exports = router;

@@ -5,13 +5,13 @@ const Upload = require('../models/Upload');
 
 
 // Dashbaord
-router.post('/dashboard', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         // count of uploads
         const uploads = await Upload.countDocuments();
         // count of users
         const users = await User.countDocuments();
-        res.json({ status: "success", message: "Dashboard data", data: { uploads, users } });
+        res.json({ status: "success", message: "Dashboard data fetched successfully", data: { uploads, users } });
 
     } catch (err) {
         res.json({ status: "error", message: err.message });
