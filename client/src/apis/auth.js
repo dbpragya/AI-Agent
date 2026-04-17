@@ -7,11 +7,11 @@ import apiClient from './apiClient';
  * @param {string} credentials.password - User's password.
  * @returns {Promise<Object>} The server response.
  */
-export const loginUser = async ({ email, password }) => {
+export const loginUser = async ({ email, password, role }) => {
   const response = await apiClient.post('/auth/login', {
     email,
     password,
-    role: 'user', // Static role as requested
+    role,
   });
   return response.data;
 };
