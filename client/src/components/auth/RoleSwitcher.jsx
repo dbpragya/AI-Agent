@@ -23,7 +23,7 @@ const RoleSwitcher = ({ selectedRole, onRoleChange }) => {
       {roles.map((role) => {
         const Icon = role.icon;
         const isActive = selectedRole === role.id;
-        
+
         return (
           <button
             key={role.id}
@@ -33,8 +33,8 @@ const RoleSwitcher = ({ selectedRole, onRoleChange }) => {
           >
             <div className={`
               h-full flex flex-col items-center p-4 rounded-xl border transition-all duration-300
-              ${isActive 
-                ? 'bg-primary-cyan/10 border-primary-cyan shadow-[0_0_15px_rgba(0,245,255,0.1)]' 
+              ${isActive
+                ? 'bg-primary-cyan/10 border-primary-cyan shadow-[0_0_15px_rgba(0,245,255,0.1)]'
                 : 'bg-zinc-900/50 border-white/5 hover:border-white/10 hover:bg-zinc-900/80'}
             `}>
               <div className={`
@@ -50,7 +50,7 @@ const RoleSwitcher = ({ selectedRole, onRoleChange }) => {
                 {role.description}
               </span>
             </div>
-            
+
             {isActive && (
               <motion.div
                 layoutId="role-glow"
