@@ -4,10 +4,14 @@ const multer = require('multer');
 const path = require('path');
 const Upload = require('../models/Upload');
 
+const os = require('os');
+
 // Multer Storage Configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        // Use /tmp directory for Vercel which is the only writable directory
+        const tempDir = os.tmpdir();
+        cb(null, tempDir);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));

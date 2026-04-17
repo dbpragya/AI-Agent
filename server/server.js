@@ -43,10 +43,16 @@ const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI)
     .then(() => {
         console.log('MongoDB Connected');
-        app.listen(PORT, () => {
-            console.log(`Server is running on port http://localhost:${PORT}`);
-        });
+        // Vercel serverless functions handle the listening via @vercel/node, so we only listen locally
+        if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+            app.listen(PORT, () => {
+                console.log(`Server is running on port http://localhost:${PORT}`);
+            });
+        }
     })
     .catch(err => {
         console.error('Database connection error:', err);
     });
+
+// Export the app for Vercel serverless deployment
+module.exports = app;
