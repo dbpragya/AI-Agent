@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Info, Layout, Code2, Beaker, History as HistoryIcon } from 'lucide-react';
+import { Info, Layout, Code2, Beaker, Search } from 'lucide-react';
 
 const tabs = [
   { id: 'info', label: 'Info Gathering', icon: Info },
   { id: 'coding', label: 'AI Features', icon: Code2 },
   { id: 'testing', label: 'Testing Phase', icon: Beaker },
-  { id: 'history', label: 'History', icon: HistoryIcon },
+  { id: 'history', label: 'Find Changes', icon: Search },
 ];
 
 const PhaseTabs = ({ activeTab, onTabChange }) => {
