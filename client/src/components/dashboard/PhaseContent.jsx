@@ -5,9 +5,7 @@ import {
   AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2 
 } from 'lucide-react';
 import FeatureSection from './FeatureSection';
-import { generateSummary } from '../../apis/project';
-
-const InfoGathering = ({ project }) => {
+import { generateSummary } from '../../apis/project';const InfoGathering = ({ project }) => {
   const [summary, setSummary] = useState(project?.summary || '');
   const [loading, setLoading] = useState(false);
 
@@ -90,46 +88,12 @@ const InfoGathering = ({ project }) => {
   );
 };
 
-const DesignPhase = () => (
-  <motion.div 
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    className="grid grid-cols-1 md:grid-cols-3 gap-6"
-  >
-    {[
-      { title: 'Authentication Core', items: ['Login Form (Email/Pass)', 'SSO Integration', 'Password Recovery', '2FA Setup Screen'] },
-      { title: 'Main Dashboard', items: ['Metric Overview Grid', 'Recent Activity Feed', 'Quick Action Toolbar', 'Data Visualization'] },
-      { title: 'Settings Space', items: ['User Profile Manager', 'Security Preferences', 'Theme Customization', 'API Key Generation'] }
-    ].map((section, index) => (
-      <div key={index} className="glass-card flex flex-col border-white/5 bg-zinc-900/40 overflow-hidden hover:border-cyan-500/20 transition-colors">
-        <div className="p-4 border-b border-white/5 bg-zinc-900/60 flex items-center gap-3">
-          <Layout size={16} className="text-cyan-500" />
-          <h3 className="font-bold text-zinc-200 text-sm">{section.title}</h3>
-        </div>
-        <div className="p-4 flex-1">
-          <ul className="space-y-2">
-            {section.items.map((item, i) => (
-              <li key={i} className="flex items-center gap-2 group cursor-pointer p-2 rounded hover:bg-white/[0.03] transition-colors">
-                <div className="w-1.5 h-1.5 rounded-full bg-zinc-700 group-hover:bg-cyan-500 transition-colors" />
-                <span className="text-xs text-zinc-400 group-hover:text-zinc-200 transition-colors">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="px-4 py-3 bg-zinc-950/50 text-[10px] text-zinc-500 uppercase font-mono tracking-widest border-t border-white/5">
-          {section.items.length} Screens Identified
-        </div>
-      </div>
-    ))}
-  </motion.div>
-);
-
 const CodingPhase = ({ project }) => (
   <motion.div 
     initial={{ opacity: 0, x: 20 }}
     animate={{ opacity: 1, x: 0 }}
   >
-    <FeatureSection projectId={project?._id} />
+    <FeatureSection projectId={project?.id} />
   </motion.div>
 );
 
@@ -256,7 +220,6 @@ const PhaseContent = ({ activeTab, project }) => {
       <AnimatePresence mode="wait">
         <div key={activeTab}>
           {activeTab === 'info' && <InfoGathering project={project} />}
-          {activeTab === 'design' && <DesignPhase project={project} />}
           {activeTab === 'coding' && <CodingPhase project={project} />}
           {activeTab === 'testing' && <TestingPhase project={project} />}
           {activeTab === 'history' && <HistoryPhase project={project} />}
