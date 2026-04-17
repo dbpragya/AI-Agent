@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, CheckCircle2, Clock, ChevronRight, Layout, AlertCircle, Terminal, ChevronDown, Check } from 'lucide-react';
-import FeatureSection from './FeatureSection';
 import { 
   FileText, CheckCircle2, Clock, ChevronRight, Layout, 
   AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2 
 } from 'lucide-react';
+import FeatureSection from './FeatureSection';
 import { generateSummary } from '../../apis/project';
 
 const InfoGathering = ({ project }) => {
