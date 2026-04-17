@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { loginUser } from '../apis/auth';
 
 export const useAuth = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    role: 'member', // default role
+    role: 'member', // default role for internal state
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -20,18 +21,22 @@ export const useAuth = () => {
   };
 
   const login = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     setLoading(true);
     setError(null);
     
-    // Simulate API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log('Logging in with:', formData.email, formData.password);
-      // Simulate success
+      const response = await loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log('Login successful:', response);
+      // You might want to store tokens/user info here (localStorage, state, etc.)
       return true;
     } catch (err) {
-      setError('Authentication failed. Please check your credentials.');
+      console.error('Login error:', err);
+      const errorMessage = err.response?.data?.message || 'Authentication failed. Please check your credentials.';
+      setError(errorMessage);
       return false;
     } finally {
       setLoading(false);
