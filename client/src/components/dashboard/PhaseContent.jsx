@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FileText, CheckCircle2, Clock, ChevronRight, Layout, AlertCircle, Terminal, ChevronDown, Check } from 'lucide-react';
+import FeatureSection from './FeatureSection';
 import { 
   FileText, CheckCircle2, Clock, ChevronRight, Layout, 
   AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2 
@@ -123,40 +125,12 @@ const DesignPhase = () => (
   </motion.div>
 );
 
-const CodingPhase = () => (
+const CodingPhase = ({ project }) => (
   <motion.div 
     initial={{ opacity: 0, x: 20 }}
     animate={{ opacity: 1, x: 0 }}
-    className="glass-card bg-[#0d0d0d] border-white/10 overflow-hidden shadow-2xl relative group"
   >
-    <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#161616]">
-      <div className="flex items-center gap-2">
-        <Terminal size={14} className="text-cyan-500" />
-        <span className="text-xs font-mono text-zinc-400">project_architecture.json</span>
-      </div>
-      <div className="flex gap-1.5">
-        <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-        <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-      </div>
-    </div>
-    <div className="p-6 font-mono text-xs leading-relaxed overflow-x-auto text-zinc-300">
-      <pre>
-<span className="text-zinc-500">{"{"}</span>
-<br/>  <span className="text-cyan-400">"project_name"</span><span className="text-zinc-500">:</span> <span className="text-green-400">"NEURAL_SENTINEL_V2"</span><span className="text-zinc-500">,</span>
-<br/>  <span className="text-cyan-400">"architecture"</span><span className="text-zinc-500">:</span> <span className="text-green-400">"Mern_Edge"</span><span className="text-zinc-500">,</span>
-<br/>  <span className="text-cyan-400">"dependencies"</span><span className="text-zinc-500">:</span> <span className="text-zinc-500">{"{"}</span>
-<br/>    <span className="text-blue-400">"react"</span><span className="text-zinc-500">:</span> <span className="text-green-400">"^19.0.0"</span><span className="text-zinc-500">,</span>
-<br/>    <span className="text-blue-400">"tailwindcss"</span><span className="text-zinc-500">:</span> <span className="text-green-400">"^4.0.0"</span><span className="text-zinc-500">,</span>
-<br/>    <span className="text-blue-400">"framer-motion"</span><span className="text-zinc-500">:</span> <span className="text-green-400">"^12.0.0"</span>
-<br/>  <span className="text-zinc-500">{"}"}</span><span className="text-zinc-500">,</span>
-<br/>  <span className="text-cyan-400">"components"</span><span className="text-zinc-500">:</span> <span className="text-zinc-500">[</span>
-<br/>    <span className="text-zinc-500">{"{"}</span> <span className="text-purple-400">"id"</span><span className="text-zinc-500">:</span> <span className="text-green-400">"auth_core"</span><span className="text-zinc-500">,</span> <span className="text-purple-400">"status"</span><span className="text-zinc-500">:</span> <span className="text-yellow-400">"active"</span> <span className="text-zinc-500">{"}"}</span><span className="text-zinc-500">,</span>
-<br/>    <span className="text-zinc-500">{"{"}</span> <span className="text-purple-400">"id"</span><span className="text-zinc-500">:</span> <span className="text-green-400">"data_mesh"</span><span className="text-zinc-500">,</span> <span className="text-purple-400">"status"</span><span className="text-zinc-500">:</span> <span className="text-yellow-400">"pending"</span> <span className="text-zinc-500">{"}"}</span>
-<br/>  <span className="text-zinc-500">]</span>
-<br/><span className="text-zinc-500">{"}"}</span>
-      </pre>
-    </div>
+    <FeatureSection projectId={project?._id} />
   </motion.div>
 );
 
