@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 // Register
 router.post('/register', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role, name } = req.body;
 
         // Check if user exists
         let user = await User.findOne({ email });
@@ -20,7 +20,9 @@ router.post('/register', async (req, res) => {
 
         user = new User({
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role,
+            name // Added name field as well since client sends it
         });
 
         await user.save();

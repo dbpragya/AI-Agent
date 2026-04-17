@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { loginUser } from '../apis/auth';
+import { loginUser, registerUser } from '../apis/auth';
 
 export const useAuth = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
-    password: '',
+    email: 'user@gmail.com',
+    password: '123456',
     role: 'member', // default role for internal state
   });
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ export const useAuth = () => {
     if (e && e.preventDefault) e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await loginUser({
         email: formData.email,
@@ -44,18 +44,30 @@ export const useAuth = () => {
   };
 
   const signup = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
+
+    // Check if role is "team"
+    if (formData.role === 'team') {
+      setError('This section is under working');
+      return false;
+    }
+
     setLoading(true);
     setError(null);
-    
-    // Simulate API call
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log('Signing up with:', formData);
-      // Simulate success
+      const response = await registerUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: 'user', // Always pass "user" for member signup
+      });
+      console.log('Signup successful:', response);
       return true;
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      console.error('Signup error:', err);
+      const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
+      setError(errorMessage);
       return false;
     } finally {
       setLoading(false);
