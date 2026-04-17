@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadCloud, Zap, ArrowRight, ArrowLeft, FileText, X, RefreshCw, AlertCircle } from 'lucide-react';
 import { uploadProject } from '../../apis/project';
-import RobotLoader from '../common/RobotLoader';
 
 const ProjectForm = ({ onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -81,10 +80,6 @@ const ProjectForm = ({ onCancel, onSubmit }) => {
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       className="max-w-2xl mx-auto w-full relative"
     >
-      <RobotLoader 
-        isLoading={loading} 
-        message="Initializing neural agent..." 
-      />
 
       <button 
         onClick={onCancel}
