@@ -1,55 +1,93 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, CheckCircle2, Clock, ChevronRight, Layout, AlertCircle, Terminal, ChevronDown, Check } from 'lucide-react';
+import { 
+  FileText, CheckCircle2, Clock, ChevronRight, Layout, 
+  AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2 
+} from 'lucide-react';
+import { generateSummary } from '../../apis/project';
 
-const InfoGathering = ({ project }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="space-y-6 max-w-4xl"
-  >
-    <div className="glass-card p-8 border-white/5 bg-zinc-900/40 relative overflow-hidden">
-      <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
-        <FileText size={120} />
-      </div>
-      
-      <div className="relative z-10">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-            <FileText className="text-cyan-500" size={20} />
-          </div>
-          <div>
-            <h3 className="text-[10px] uppercase tracking-widest font-bold text-cyan-500">Executive Summary</h3>
-            <h2 className="text-xl font-bold text-zinc-100">{project?.name || 'Project Overview'}</h2>
-          </div>
+const InfoGathering = ({ project }) => {
+  const [summary, setSummary] = useState(project?.summary || '');
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerateSummary = async () => {
+    if (!project?.id || loading) return;
+    
+    setLoading(true);
+    try {
+      const response = await generateSummary(project.id);
+      if (response.status === 'success') {
+        setSummary(response.data);
+      }
+    } catch (error) {
+      console.error('Error generating summary:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6 max-w-4xl"
+    >
+      <div className="glass-card p-8 border-white/5 bg-zinc-900/40 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
+          <FileText size={120} />
         </div>
         
-        <div className="space-y-6">
-          <div className="p-4 rounded-xl bg-zinc-950/50 border border-white/5 font-mono text-sm leading-relaxed text-zinc-300 shadow-inner">
-            {project?.story || 'No explicit user story provided. Generating neural parameters based on default template.'}
-          </div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                <FileText className="text-cyan-500" size={20} />
+              </div>
+              <div>
+                <h3 className="text-[10px] uppercase tracking-widest font-bold text-cyan-500">Executive Summary</h3>
+                <h2 className="text-xl font-bold text-zinc-100">{project?.name || 'Project Overview'}</h2>
+              </div>
+            </div>
 
-          <div>
-            <h4 className="text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-3 block">Extracted_Directives</h4>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[
-                'Implement robust authentication',
-                'Create glassmorphic UI components',
-                'Integrate dashboard analytics',
-                'Ensure responsive mobile layout'
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-zinc-400 bg-zinc-900/50 p-3 rounded-lg border border-white/5">
-                  <Check size={16} className="text-cyan-500/70 mt-0.5 shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <button
+              onClick={handleGenerateSummary}
+              disabled={loading}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 transition-all text-[10px] font-bold uppercase tracking-widest disabled:opacity-50"
+            >
+              {loading ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Sparkles size={14} />
+              )}
+              {summary ? 'Regenerate AI Summary' : 'Generate AI Summary'}
+            </button>
+          </div>
+          
+          <div className="space-y-6">
+            <div className="p-6 rounded-xl bg-zinc-950/50 border border-white/5 font-mono text-sm leading-relaxed text-zinc-300 shadow-inner min-h-[120px] transition-all duration-500">
+              {loading ? (
+                <div className="space-y-3 animate-pulse">
+                  <div className="h-4 bg-white/5 rounded w-3/4" />
+                  <div className="h-4 bg-white/5 rounded w-full" />
+                  <div className="h-4 bg-white/5 rounded w-5/6" />
+                </div>
+              ) : (
+                summary || <span className="text-zinc-600 italic">No summary generated yet. Click the button above to analyze document.</span>
+              )}
+            </div>
+
+            <div>
+              <h4 className="text-[10px] uppercase tracking-widest font-bold text-zinc-500 mb-3 block px-1">Source_Directive_Text</h4>
+              <div className="p-4 rounded-lg bg-zinc-900/30 border border-white/5 text-xs text-zinc-500 italic max-h-[100px] overflow-y-auto custom-scrollbar">
+                "{project?.story || 'No raw story text provided.'}"
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 const DesignPhase = () => (
   <motion.div 
