@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, CheckCircle2, Clock, ChevronRight, Layout, 
@@ -10,6 +10,13 @@ import { generateSummary } from '../../apis/project';
 const InfoGathering = ({ project }) => {
   const [summary, setSummary] = useState(project?.summary || '');
   const [loading, setLoading] = useState(false);
+
+  // Auto-fetch summary if missing
+  useEffect(() => {
+    if (!summary && project?.id) {
+      handleGenerateSummary();
+    }
+  }, [project?.id]);
 
   const handleGenerateSummary = async () => {
     if (!project?.id || loading) return;

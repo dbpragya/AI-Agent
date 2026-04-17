@@ -7,6 +7,7 @@ import RoleSwitcher from '../../components/auth/RoleSwitcher';
 import { useAuth } from '../../hooks/useAuth';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import CustomLoader from '../../components/common/CustomLoader';
 
 const SignupPage = () => {
   const { formData, loading, error, handleChange, handleRoleChange, signup } = useAuth();
@@ -23,6 +24,10 @@ const SignupPage = () => {
   return (
     <AuthLayout>
       <div className="relative w-full max-w-md">
+        <CustomLoader 
+          isLoading={loading} 
+          message="Creating account..." 
+        />
 
         <AuthCard
           title="Sign Up"

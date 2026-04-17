@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadCloud, Zap, ArrowRight, ArrowLeft, FileText, X, RefreshCw, AlertCircle } from 'lucide-react';
 import { uploadProject } from '../../apis/project';
+import CustomLoader from '../common/CustomLoader';
 
 const ProjectForm = ({ onCancel, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -80,6 +81,10 @@ const ProjectForm = ({ onCancel, onSubmit }) => {
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       className="max-w-2xl mx-auto w-full relative"
     >
+      <CustomLoader 
+        isLoading={loading} 
+        message="Initializing neural agent..." 
+      />
 
       <button 
         onClick={onCancel}

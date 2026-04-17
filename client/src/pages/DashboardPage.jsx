@@ -10,6 +10,7 @@ import ProjectForm from '../components/dashboard/ProjectForm';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { getSummary } from '../apis/project';
+import CustomLoader from '../components/common/CustomLoader';
 
 const DashboardPage = () => {
   const [view, setView] = useState('list'); // 'list', 'create', 'detail'
@@ -26,10 +27,12 @@ const DashboardPage = () => {
       try {
         setLoading(true);
         const response = await getSummary();
+        console.log('--- DEBUG: Projects API Response ---', response);
+        
         if (response.status === 'success') {
           // Transform server data to match UI format
           const formattedProjects = response.data.map(item => ({
-            id: item._id,
+            id: item.id,
             name: item.projectName || 'Untitled Project',
             story: item.description || '',
             summary: item.summary || '',
@@ -104,7 +107,10 @@ const DashboardPage = () => {
       header={renderHeader()}
     >
       <div className="relative h-full">
-
+        <CustomLoader 
+          isLoading={loading} 
+          message="Syncing your projects..." 
+        />
 
         <AnimatePresence mode="wait">
           {view === 'list' && !loading && (

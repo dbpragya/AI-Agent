@@ -7,6 +7,7 @@ import ScanningLogo from '../../components/auth/ScanningLogo';
 import { useAuth } from '../../hooks/useAuth';
 import { Mail, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import CustomLoader from '../../components/common/CustomLoader';
 
 const LoginPage = () => {
   const { formData, loading, error, handleChange, login } = useAuth();
@@ -27,6 +28,10 @@ const LoginPage = () => {
   return (
     <AuthLayout>
       <div className="relative w-full max-w-md">
+        <CustomLoader 
+          isLoading={loading} 
+          message="Authenticating..." 
+        />
      
 
         <AnimatePresence>
