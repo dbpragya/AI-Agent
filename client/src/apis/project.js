@@ -28,7 +28,7 @@ export const uploadProject = async ({ projectName, description, file }) => {
  * @returns {Promise<Object>} The server response containing projects data.
  */
 export const getSummary = async () => {
-  const response = await apiClient.get('/summary');
+  const response = await apiClient.get('/projects');
   return response.data;
 };
 
@@ -38,6 +38,6 @@ export const getSummary = async () => {
  * @returns {Promise<Object>} The server response containing the generated summary.
  */
 export const generateSummary = async (projectId) => {
-  const response = await apiClient.post('/summary', { projectId });
+  const response = await apiClient.get(`/summary/${projectId}`);
   return response.data;
 };
