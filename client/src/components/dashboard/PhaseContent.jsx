@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, CheckCircle2, Clock, ChevronRight, Layout, 
-  AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2 
+  AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2, Search 
 } from 'lucide-react';
 import FeatureSection from './FeatureSection';
 import { generateSummary } from '../../apis/project';
@@ -215,40 +215,101 @@ const TestingPhase = () => (
   </motion.div>
 );
 
-const HistoryPhase = () => (
-  <motion.div 
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    className="relative pl-8 space-y-12 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-zinc-900 ml-4 border-white/5"
-  >
-    {[
-      { date: '12 OCT', title: 'Neural Protocols Updated', tags: ['Security', 'V2.1'], changes: '4 detected' },
-      { date: '10 OCT', title: 'Design Aesthetic Realignment', tags: ['UI/UX'], changes: '12 detected' },
-      { date: '08 OCT', title: 'Alpha Release: Module_v0.1', tags: ['Core'], changes: 'Initial setup' },
-    ].map((item, i) => (
-      <div key={i} className="relative group">
-        <div className="absolute -left-10 top-1 w-6 h-6 rounded-full bg-surface border-2 border-zinc-800 group-hover:border-cyan-500/50 transition-all z-10 flex items-center justify-center">
-          <div className="w-1.5 h-1.5 rounded-full bg-zinc-700 group-hover:bg-cyan-500 transition-colors" />
-        </div>
-        <div className="space-y-2 pb-2">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[10px] font-mono text-cyan-500/70 tracking-tighter w-12">{item.date}</span>
-            <h4 className="text-sm font-bold text-zinc-300 group-hover:text-zinc-100">{item.title}</h4>
-            <div className="flex gap-2">
-              {item.tags.map(tag => (
-                <span key={tag} className="px-1.5 py-0.5 rounded-md bg-zinc-900 border border-white/5 text-[9px] text-zinc-500 uppercase tracking-widest">{tag}</span>
-              ))}
-            </div>
+const FindChangesPhase = ({ project }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const handleSearch = () => {
+    // Dummy implementation for now, wait for API integration
+    if(!searchQuery) return;
+    setIsSearching(true);
+    setResult(null);
+    setTimeout(() => {
+      setIsSearching(false);
+      setResult("AI search feature is currently disconnected. API integration pending.");
+    }, 1500);
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="space-y-6 max-w-4xl"
+    >
+      <div className="glass-card p-6 border-white/5 bg-zinc-900/40 shadow-xl">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+            <Search className="text-cyan-500" size={20} />
           </div>
-          <div className="flex items-center gap-2 text-xs text-zinc-600">
-            <Clock size={12} />
-            <span className="font-mono text-[10px] text-zinc-500">{item.changes}</span>
+          <div>
+            <h3 className="text-[10px] uppercase tracking-widest font-bold text-cyan-500">AI Analyzer</h3>
+            <h2 className="text-lg font-bold text-zinc-100">Find Changes in User Story</h2>
+          </div>
+        </div>
+        
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 relative group">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search size={16} className="text-zinc-500 group-focus-within:text-cyan-400 transition-colors" />
+            </div>
+            <input 
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="Ask the AI about specific features or changes..."
+              className="w-full bg-zinc-950/80 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all shadow-inner"
+            />
+          </div>
+          <button 
+            onClick={handleSearch}
+            disabled={isSearching || !searchQuery}
+            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition-all text-xs font-bold uppercase tracking-widest disabled:opacity-50 disabled:hover:bg-cyan-500/10 disabled:hover:border-cyan-500/30 min-w-[160px] shadow-[0_0_15px_rgba(6,182,212,0.1)]"
+          >
+            {isSearching ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+            {isSearching ? 'Analyzing...' : 'Search AI'}
+          </button>
+        </div>
+
+        {/* Results Area */}
+        <div className="mt-6">
+          <div className="p-6 rounded-xl bg-zinc-950/50 border border-white/5 font-mono text-sm leading-relaxed text-zinc-300 shadow-inner min-h-[140px] transition-all duration-500 relative overflow-hidden">
+            {isSearching && (
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50 animate-pulse" />
+            )}
+            
+            {isSearching ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-cyan-500/70 mb-4">
+                  <Loader2 size={14} className="animate-spin" />
+                  <span className="text-[10px] uppercase tracking-widest">Scanning Document Content</span>
+                </div>
+                <div className="h-4 bg-white/5 rounded-md w-3/4 animate-pulse relative overflow-hidden" />
+                <div className="h-4 bg-white/5 rounded-md w-full animate-pulse flex-1" />
+                <div className="h-4 bg-white/5 rounded-md w-5/6 animate-pulse" />
+              </div>
+            ) : result ? (
+              <div className="flex items-start gap-4">
+                <div className="p-1.5 rounded bg-cyan-500/10 shrink-0">
+                  <Sparkles size={16} className="text-cyan-400" />
+                </div>
+                <p className="text-zinc-300 mt-1">{result}</p>
+              </div>
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center text-zinc-600 italic space-y-3 py-6">
+                <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center mb-2">
+                  <Terminal size={20} className="text-zinc-700" />
+                </div>
+                <p className="text-center text-xs">Awaiting query input.<br/>Ask me to find specific modules or verify functionality.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    ))}
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 const PhaseContent = ({ activeTab, project }) => {
   return (
@@ -259,7 +320,7 @@ const PhaseContent = ({ activeTab, project }) => {
           {activeTab === 'design' && <DesignPhase project={project} />}
           {activeTab === 'coding' && <CodingPhase project={project} />}
           {activeTab === 'testing' && <TestingPhase project={project} />}
-          {activeTab === 'history' && <HistoryPhase project={project} />}
+          {activeTab === 'history' && <FindChangesPhase project={project} />}
         </div>
       </AnimatePresence>
     </div>
