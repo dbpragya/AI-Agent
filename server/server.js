@@ -17,14 +17,16 @@ app.use(express.urlencoded({ limit: '100mb', extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
-const todoRoutes = require('./routes/todoRoutes');
+
 const authRoutes = require('./routes/authRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const dashboardRoutes = require('./routes/dashboard');
+const summaryRoutes = require('./routes/summaryRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/summary', summaryRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {
@@ -39,7 +41,7 @@ mongoose.connect(MONGO_URI)
     .then(() => {
         console.log('MongoDB Connected');
         app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
+            console.log(`Server is running on port http://localhost:${PORT}`);
         });
     })
     .catch(err => {

@@ -13,6 +13,12 @@ const uploadSchema = new mongoose.Schema({
     file: {
         type: String,
     },
+    summary: {
+        type: String,
+    },
+    features: {
+        type: String,
+    },
     createdAt: {
         type: Date,
         default: Date.now
