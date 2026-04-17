@@ -103,7 +103,7 @@ const DashboardPage = () => {
 
   return (
     <DashboardLayout
-      sidebar={<Sidebar />}
+      sidebar={<Sidebar view={view} />}
       header={renderHeader()}
     >
       <div className="relative h-full">
