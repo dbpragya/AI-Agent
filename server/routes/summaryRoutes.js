@@ -66,9 +66,9 @@ router.get('/', async (req, res) => {
 });
 
 // Existing routes for Summary and Features
-router.post('/', async (req, res) => {
+router.get('/:projectId', async (req, res) => {
     try {
-        const { projectId } = req.body;
+        const { projectId } = req.params;
         const upload = await Upload.findById(projectId);
         const filePath = path.join(__dirname, '..', upload.file);
         const text = await extractTextFromFile(filePath, upload);
@@ -84,13 +84,13 @@ router.post('/', async (req, res) => {
         const summary = chatCompletion.choices[0]?.message?.content;
         upload.summary = summary;
         await upload.save();
-        res.json({ status: "success", data: summary });
+        res.json({ status: "success", message: "Summary Generated Successfully", data: summary });
     } catch (err) { res.status(500).json({ status: "error", message: err.message }); }
 });
 
-router.post('/features', async (req, res) => {
+router.get('/features/:projectId', async (req, res) => {
     try {
-        const { projectId } = req.body;
+        const { projectId } = req.params;
         const upload = await Upload.findById(projectId);
         if (!upload) return res.status(404).json({ status: "error", message: "Project not found" });
 
@@ -99,14 +99,14 @@ router.post('/features', async (req, res) => {
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { 
-                    role: "system", 
+                {
+                    role: "system",
                     content: "Analyze the project documentation and extract major technical modules. " +
-                             "Return ONLY a RAW JSON array of objects. Each object must have: " +
-                             "1. 'title': The module name (e.g., 'Authentication Core'). " +
-                             "2. 'features': An array of 4-6 specific feature strings. " +
-                             "3. 'screensCount': A realistic estimate of unique screens for this module. " +
-                             "Return ONLY the JSON array. No markdown, no explanations."
+                        "Return ONLY a RAW JSON array of objects. Each object must have: " +
+                        "1. 'title': The module name (e.g., 'Authentication Core'). " +
+                        "2. 'features': An array of 4-6 specific feature strings. " +
+                        "3. 'screensCount': A realistic estimate of unique screens for this module. " +
+                        "Return ONLY the JSON array. No markdown, no explanations."
                 },
                 { role: "user", content: text.substring(0, 30000) }
             ],
@@ -116,12 +116,12 @@ router.post('/features', async (req, res) => {
         let featuresRaw = chatCompletion.choices[0]?.message?.content || "[]";
         // Remove potential markdown code blocks
         featuresRaw = featuresRaw.replace(/```json\n?|```/g, "").trim();
-        
+
         try {
             const features = JSON.parse(featuresRaw);
             upload.features = JSON.stringify(features);
             await upload.save();
-            res.json({ status: "success", data: features });
+            res.json({ status: "success", message: "Features Generated Successfully", data: features });
         } catch (parseError) {
             console.error("JSON Parse Error:", parseError, featuresRaw);
             res.status(500).json({ status: "error", message: "Failed to parse AI response as JSON" });
