@@ -41,3 +41,14 @@ export const generateSummary = async (projectId) => {
   const response = await apiClient.get(`/summary/${projectId}`);
   return response.data;
 };
+
+/**
+ * Trigger AI search within a project's summary.
+ * @param {string} projectId - The project ID.
+ * @param {string} query - The search query term.
+ * @returns {Promise<Object>} The server response containing the search result.
+ */
+export const searchProjectChanges = async (projectId, query) => {
+  const response = await apiClient.get(`/summary/search/${projectId}?search=${encodeURIComponent(query)}`);
+  return response.data;
+};

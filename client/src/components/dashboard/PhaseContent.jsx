@@ -5,7 +5,9 @@ import {
   AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2, Search 
 } from 'lucide-react';
 import FeatureSection from './FeatureSection';
-import { generateSummary } from '../../apis/project';const InfoGathering = ({ project }) => {
+import { generateSummary, searchProjectChanges } from '../../apis/project';
+
+const InfoGathering = ({ project }) => {
   const [summary, setSummary] = useState(project?.summary || '');
   const [loading, setLoading] = useState(false);
 
@@ -191,15 +193,23 @@ const FindChangesPhase = ({ project }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [result, setResult] = useState(null);
 
-  const handleSearch = () => {
-    // Dummy implementation for now, wait for API integration
-    if(!searchQuery) return;
+  const handleSearch = async () => {
+    if(!searchQuery || !project?.id) return;
     setIsSearching(true);
     setResult(null);
-    setTimeout(() => {
+
+    try {
+      const response = await searchProjectChanges(project.id, searchQuery);
+      if (response.status === 'success') {
+        setResult({ type: 'success', text: response.data || response.message });
+      } else {
+        setResult({ type: 'error', text: response.message || "Failed to search document." });
+      }
+    } catch (error) {
+      setResult({ type: 'error', text: error?.response?.data?.message || "An unexpected error occurred during search." });
+    } finally {
       setIsSearching(false);
-      setResult("AI search feature is currently disconnected. API integration pending.");
-    }, 1500);
+    }
   };
 
   return (
@@ -261,11 +271,16 @@ const FindChangesPhase = ({ project }) => {
                 <div className="h-4 bg-white/5 rounded-md w-5/6 animate-pulse" />
               </div>
             ) : result ? (
-              <div className="flex items-start gap-4">
-                <div className="p-1.5 rounded bg-cyan-500/10 shrink-0">
-                  <Sparkles size={16} className="text-cyan-400" />
+              <div className={`flex items-start gap-4 p-4 rounded-lg border ${result.type === 'success' ? 'bg-cyan-500/5 border-cyan-500/20' : 'bg-red-500/5 border-red-500/20'}`}>
+                <div className={`p-1.5 rounded shrink-0 ${result.type === 'success' ? 'bg-cyan-500/10 text-cyan-400' : 'bg-red-500/10 text-red-500'}`}>
+                  {result.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                 </div>
-                <p className="text-zinc-300 mt-1">{result}</p>
+                <div>
+                  <h4 className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${result.type === 'success' ? 'text-cyan-500' : 'text-red-500'}`}>
+                    {result.type === 'success' ? 'Matches Found' : 'Not Found'}
+                  </h4>
+                  <p className="text-zinc-300 text-xs leading-relaxed">{result.text}</p>
+                </div>
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-zinc-600 italic space-y-3 py-6">
