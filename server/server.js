@@ -15,9 +15,13 @@ app.use(express.json());
 // Routes
 const todoRoutes = require('./routes/todoRoutes');
 const authRoutes = require('./routes/authRoutes');
+const projectRoutes = require('./routes/projectRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
 app.use('/api/todos', todoRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {

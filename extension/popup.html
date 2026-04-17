@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="popup.css">
+    <title>SnipSage</title>
+</head>
+<body>
+    <div class="glass-container">
+        <!-- Login View -->
+        <div id="login-view">
+            <header class="popup-header">
+                <div class="logo-area">
+                    <span class="logo-icon">✨</span>
+                    <h1>SnipSage</h1>
+                </div>
+            </header>
+            <div class="auth-section">
+                <h2 id="auth-title">Welcome Back</h2>
+                <div class="input-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="email@example.com">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••">
+                </div>
+                <button id="login-btn" class="save-btn glow-on-hover">Login</button>
+                <p class="auth-toggle">Don't have an account? <span id="toggle-auth">Sign Up</span></p>
+            </div>
+        </div>
+
+        <!-- Main Dashboard View (Hidden by default) -->
+        <div id="main-view" class="hidden">
+            <header class="popup-header">
+                <div class="logo-area">
+                    <span class="logo-icon">✨</span>
+                    <h1>SnipSage</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="logout-btn" title="Logout" class="icon-btn-header">
+                        <span class="icon">Logout</span>
+                    </button>
+                    <button id="dashboard-btn-top" title="Open Dashboard" class="icon-btn-header">
+                        <span class="icon">➜</span>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="user-greeting">
+                <span class="wave">👋</span>
+                <p>Hello, <span id="display-username">User</span></p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <textarea id="selected-text" readonly placeholder="Selected content will appear here..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="source-url" readonly placeholder="Source URL">
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="page-title" readonly placeholder="Page title">
+                </div>
+
+                <div class="input-group dropdown-group">
+                    <label for="project-dropdown">Select Project</label>
+                    <select id="project-dropdown">
+                        <option value="" disabled selected>Loading projects...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="ai-result-area" class="ai-result hidden">
+                <div class="result-content">
+                    <span class="brain-icon">🧠</span>
+                    <div id="ai-result-text"></div>
+                </div>
+            </div>
+
+            <div id="research-scan" class="research-scan hidden">
+                <div class="scan-animation">
+                    <div class="pulsing-brain">🧠</div>
+                    <div class="scanning-line"></div>
+                </div>
+                <p>Researching project context...</p>
+            </div>
+
+            <div class="action-buttons">
+                <button id="save-btn" class="save-btn glow-on-hover">
+                    <span class="icon">✂️</span> Save Selection
+                </button>
+                
+                <button id="dashboard-link-btn" class="dashboard-btn">
+                    <span class="icon">📊</span> Open Dashboard
+                </button>
+            </div>
+        </div>
+
+        <div id="status-msg" class="status-msg"></div>
+        <div id="loader" class="loader hidden"></div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
