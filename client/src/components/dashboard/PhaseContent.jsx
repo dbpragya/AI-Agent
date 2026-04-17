@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, CheckCircle2, Clock, ChevronRight, Layout, 
-  AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2, Search 
+  AlertCircle, Terminal, ChevronDown, Check, Sparkles, Loader2, Search, Beaker 
 } from 'lucide-react';
 import FeatureSection from './FeatureSection';
 import { generateSummary } from '../../apis/project';const InfoGathering = ({ project }) => {
@@ -161,30 +161,107 @@ const AccordionItem = ({ test }) => {
   );
 };
 
-const TestingPhase = () => (
-  <motion.div 
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    className="space-y-3"
-  >
-    {[
-      { 
-        id: 'AUTH_001', name: 'Test Login Flow', status: 'Success', 
-        steps: ['Render login form', 'Input valid credentials', 'Assert API request payload', 'Verify token in localStorage', 'Confirm redirect to Dashboard'] 
-      },
-      { 
-        id: 'CONN_042', name: 'Neural_Bridge_Handshake', status: 'Pending Scan', 
-        steps: ['Initiate WebSocket connection', 'Send HELO payload', 'Await ACK response', 'Measure latency (<50ms)'] 
-      },
-      { 
-        id: 'SEC_009', name: 'Input Sanitization', status: 'In Progress', 
-        steps: ['Inject XSS payloads into input fields', 'Verify escaping on render', 'Assert rejection on API level'] 
+const TestingPhase = ({ project }) => {
+  const [testModules, setTestModules] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchTestCases = async () => {
+    if (!project?.id) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(`http://localhost:5000/api/summary/testcases/${project.id}`);
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        setTestModules(Array.isArray(data.data) ? data.data : []);
+      } else {
+        setError(data.message || 'Failed to fetch test cases');
       }
-    ].map((test) => (
-      <AccordionItem key={test.id} test={test} />
-    ))}
-  </motion.div>
-);
+    } catch (err) {
+      console.error('Error fetching test cases:', err);
+      setError('Network error or AI generation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTestCases();
+  }, [project?.id]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center p-20 space-y-4">
+        <Loader2 className="animate-spin text-cyan-500" size={32} />
+        <p className="text-zinc-500 font-mono text-xs uppercase tracking-widest">Generating Test_Suites...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-20 glass-card bg-red-500/5 border-red-500/10">
+        <Sparkles className="text-red-500 mb-4" size={32} />
+        <p className="text-red-400 font-bold mb-4">{error}</p>
+        <button 
+          onClick={fetchTestCases}
+          className="px-4 py-2 bg-zinc-900 border border-white/5 rounded-lg text-xs"
+        >
+          Retry Search
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-8"
+    >
+      {testModules.length === 0 ? (
+        <div className="glass-card p-12 text-center border-white/5 bg-zinc-900/20">
+          <p className="text-zinc-500 italic">No test cases generated for this project yet.</p>
+          <button 
+            onClick={fetchTestCases}
+            className="mt-6 px-6 py-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-cyan-500/20 transition-all"
+          >
+            Trigger AI Testing Scan
+          </button>
+        </div>
+      ) : (
+        testModules.map((module, idx) => (
+          <div key={idx} className="space-y-4">
+            <div className="flex items-center gap-3 px-2">
+              <div className="p-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                <Beaker className="text-cyan-500" size={16} />
+              </div>
+              <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">{module.title}</h3>
+            </div>
+            <div className="space-y-3">
+              {module.testCases.map((test) => (
+                <AccordionItem 
+                  key={test.id} 
+                  test={{
+                    ...test,
+                    name: test.title, // Map API 'title' to component 'name'
+                    status: test.status.charAt(0).toUpperCase() + test.status.slice(1).toLowerCase() // Normalize status
+                  }} 
+                />
+              ))}
+            </div>
+          </div>
+        ))
+      )}
+    </motion.div>
+  );
+};
 
 const FindChangesPhase = ({ project }) => {
   const [searchQuery, setSearchQuery] = useState('');
