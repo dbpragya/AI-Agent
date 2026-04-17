@@ -1,7 +1,26 @@
 import React from 'react';
-import { Edit3, Share2, Play, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Edit3, Share2, LogOut, ChevronDown, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import apiClient from '../../apis/apiClient';
 
 const ProjectHeader = ({ project, onRefineClick, onBack }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      try {
+        await apiClient.post('/auth/logout');
+        localStorage.removeItem('token');
+        navigate('/');
+      } catch (error) {
+        console.error('Logout error:', error);
+        // Fallback logout locally even if server errors
+        localStorage.removeItem('token');
+        navigate('/');
+      }
+    }
+  };
+
   return (
     <header className="h-16 shrink-0 border-b border-white/5 bg-surface/50 backdrop-blur-md px-6 md:px-8 flex items-center justify-between z-10 w-full text-zinc-100">
       <div className="flex items-center gap-4">
@@ -42,9 +61,12 @@ const ProjectHeader = ({ project, onRefineClick, onBack }) => {
           Refine Brief
         </button>
 
-        <button className="flex items-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black rounded-lg transition-all text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]">
-          <Play size={16} fill="currentColor" />
-          Deploy
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 rounded-lg transition-all text-sm font-bold shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]"
+        >
+          <LogOut size={16} />
+          Logout
         </button>
       </div>
     </header>

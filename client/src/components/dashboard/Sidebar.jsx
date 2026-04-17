@@ -104,22 +104,10 @@ const Sidebar = ({ view }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-hidden px-4 py-6 scrollbar-hide relative">
+      <div className="flex-1 overflow-hidden px-4 py-6 scrollbar-hide relative flex flex-col justify-end pb-8">
         <AnimatePresence>
-          {view === 'list' && !isCollapsed && <RoboticAnimation key="robot-anim" />}
+          {!isCollapsed && <RoboticAnimation key="robot-anim" />}
         </AnimatePresence>
-      </div>
-
-      {/* Footer Actions */}
-      <div className="p-4 border-t border-white/5 space-y-1">
-        <button className="w-full flex items-center gap-3 p-2 rounded-lg text-zinc-500 hover:bg-white/[0.02] hover:text-zinc-300 transition-all">
-          <Settings size={18} />
-          {!isCollapsed && <span className="text-xs font-medium">Configurations</span>}
-        </button>
-        <button className="w-full flex items-center gap-3 p-2 rounded-lg text-zinc-500 hover:bg-white/[0.02] hover:text-red-500 transition-all">
-          <LogOut size={18} />
-          {!isCollapsed && <span className="text-xs font-medium">Decommission</span>}
-        </button>
       </div>
     </motion.div>
   );
