@@ -45,25 +45,25 @@ const extractTextFromFile = async (filePath, upload) => {
 };
 
 // @route   GET /api/summary
-router.get('/', async (req, res) => {
-    try {
-        const uploads = await Upload.find();
-        const baseUrl = `${req.protocol}://${req.get('host')}`;
+// router.get('/', async (req, res) => {
+//     try {
+//         const uploads = await Upload.find();
+//         const baseUrl = `${req.protocol}://${req.get('host')}`;
 
-        const formattedUploads = uploads.map(upload => ({
-            ...upload.toObject(),
-            summary: upload.summary || "",
-            features: upload.features || "",
-            projectName: upload.projectName || "",
-            description: upload.description || "",
-            file: upload.file ? `${baseUrl}/${upload.file.replace(/\\/g, '/')}` : null
-        }));
+//         const formattedUploads = uploads.map(upload => ({
+//             ...upload.toObject(),
+//             summary: upload.summary || "",
+//             features: upload.features || "",
+//             projectName: upload.projectName || "",
+//             description: upload.description || "",
+//             file: upload.file ? `${baseUrl}/${upload.file.replace(/\\/g, '/')}` : null
+//         }));
 
-        res.json({ status: "success", message: "Uploads fetched successfully", data: formattedUploads });
-    } catch (err) {
-        res.json({ status: "error", message: err.message });
-    }
-});
+//         res.json({ status: "success", message: "Uploads fetched successfully", data: formattedUploads });
+//     } catch (err) {
+//         res.json({ status: "error", message: err.message });
+//     }
+// });
 
 // Existing routes for Summary and Features
 router.get('/:projectId', async (req, res) => {
@@ -78,7 +78,7 @@ router.get('/:projectId', async (req, res) => {
                 { role: "system", content: "You are an expert project analyst. Summarize this project in 400 words." },
                 { role: "user", content: text.substring(0, 30000) }
             ],
-            model: "llama-3.3-70b-versatile",
+            model: "llama-3.1-8b-instant",
         });
 
         const summary = chatCompletion.choices[0]?.message?.content;
@@ -88,6 +88,7 @@ router.get('/:projectId', async (req, res) => {
     } catch (err) { res.status(500).json({ status: "error", message: err.message }); }
 });
 
+//feature
 router.get('/features/:projectId', async (req, res) => {
     try {
         const { projectId } = req.params;
@@ -110,7 +111,7 @@ router.get('/features/:projectId', async (req, res) => {
                 },
                 { role: "user", content: text.substring(0, 30000) }
             ],
-            model: "llama-3.3-70b-versatile",
+            model: "llama-3.1-8b-instant",
         });
 
         let featuresRaw = chatCompletion.choices[0]?.message?.content || "[]";
@@ -129,7 +130,15 @@ router.get('/features/:projectId', async (req, res) => {
     } catch (err) { res.status(500).json({ status: "error", message: err.message }); }
 });
 
-router.get('/:projectId', async (req, res) => {
+
+//test cases
+router.get('/testcases/:projectId', async (req, res) => {
+
+
+});
+
+//search
+router.get('/search/:projectId', async (req, res) => {
     try {
         const { projectId } = req.params;
         const { search } = req.query;
@@ -156,7 +165,7 @@ router.get('/:projectId', async (req, res) => {
                 { role: "system", content: `You are an expert analyst. If the word "${search}" is found in the documentation, provide a concise explanation (max 50 words) about its context. Start your response with "Yes, found the word: "` },
                 { role: "user", content: text.substring(0, 30000) }
             ],
-            model: "llama-3.3-70b-versatile",
+            model: "llama-3.1-8b-instant",
         });
 
         const response = chatCompletion.choices[0]?.message?.content;
