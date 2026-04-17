@@ -55,6 +55,13 @@ const LoginPage = () => {
           <ScanningLogo />
           
           <form onSubmit={handleSubmit}>
+            <div className="mb-6">
+              <RoleSwitcher
+                selectedRole={formData.role}
+                onRoleChange={handleRoleChange}
+              />
+            </div>
+
             <InputField
               id="email"
               label="Email"

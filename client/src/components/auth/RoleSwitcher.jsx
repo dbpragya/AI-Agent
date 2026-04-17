@@ -5,15 +5,15 @@ import { Users, User } from 'lucide-react';
 const RoleSwitcher = ({ selectedRole, onRoleChange }) => {
   const roles = [
     {
-      id: 'member',
+      id: 'user',
       title: 'Member',
-      description: 'Individual contributor',
+      description: 'Individual Node',
       icon: User,
     },
     {
-      id: 'team',
+      id: 'admin',
       title: 'Team',
-      description: 'Collaborate with others',
+      description: 'Matrix Control',
       icon: Users,
     },
   ];
