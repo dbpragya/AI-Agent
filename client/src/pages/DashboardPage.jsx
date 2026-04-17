@@ -17,7 +17,7 @@ const DashboardPage = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   const [activeTab, setActiveTab] = useState('info');
   const [isRefineOpen, setIsRefineOpen] = useState(false);
 
@@ -28,18 +28,16 @@ const DashboardPage = () => {
         setLoading(true);
         const response = await getSummary();
         console.log('--- DEBUG: Projects API Response ---', response);
-        
+
         if (response.status === 'success') {
           // Transform server data to match UI format
           const formattedProjects = response.data.map(item => ({
             id: item.id,
             name: item.projectName || 'Untitled Project',
             story: item.description || '',
-            summary: item.summary || '',
-            features: item.features || '',
             fileUrl: item.file,
-            updatedAt: new Date(item.createdAt).toLocaleDateString([], { 
-              month: 'short', 
+            updatedAt: new Date(item.createdAt).toLocaleDateString([], {
+              month: 'short',
               day: 'numeric',
               hour: '2-digit',
               minute: '2-digit'
@@ -73,23 +71,23 @@ const DashboardPage = () => {
   const renderHeader = () => {
     if (view === 'detail') {
       return (
-        <ProjectHeader 
+        <ProjectHeader
           project={selectedProject}
-          onRefineClick={() => setIsRefineOpen(true)} 
+          onRefineClick={() => setIsRefineOpen(true)}
           onBack={() => setView('list')}
         />
       );
     }
-    
+
     // For 'list' or 'create'
     return (
       <header className="h-16 shrink-0 border-b border-white/5 bg-surface/50 backdrop-blur-md px-6 md:px-8 flex items-center justify-between z-10 w-full text-zinc-100">
         <div className="flex items-center gap-3">
           <span className="font-bold tracking-tight text-lg underline decoration-cyan-500/50 underline-offset-4">Comrade Ai</span>
         </div>
-        
+
         {view === 'list' && (
-          <button 
+          <button
             onClick={() => setView('create')}
             className="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 rounded-lg text-zinc-200 transition-all text-sm font-medium hover:text-cyan-400 group"
           >
@@ -107,9 +105,9 @@ const DashboardPage = () => {
       header={renderHeader()}
     >
       <div className="relative h-full">
-        <CustomLoader 
-          isLoading={loading} 
-          message="Syncing your projects..." 
+        <CustomLoader
+          isLoading={loading}
+          message="Syncing your projects..."
         />
 
         <AnimatePresence mode="wait">
@@ -121,8 +119,8 @@ const DashboardPage = () => {
               exit={{ opacity: 0, y: -10 }}
               className="h-full"
             >
-              <ProjectList 
-                projects={projects} 
+              <ProjectList
+                projects={projects}
                 onSelectProject={handleSelectProject}
                 onCreateNew={() => setView('create')}
               />
@@ -137,8 +135,8 @@ const DashboardPage = () => {
               exit={{ opacity: 0, x: -20 }}
               className="h-full flex items-center justify-center p-4"
             >
-              <ProjectForm 
-                onCancel={() => setView('list')} 
+              <ProjectForm
+                onCancel={() => setView('list')}
                 onSubmit={handleCreateProject}
               />
             </motion.div>
@@ -161,9 +159,9 @@ const DashboardPage = () => {
         </AnimatePresence>
       </div>
 
-      <RefineBriefPanel 
-        isOpen={isRefineOpen} 
-        onClose={() => setIsRefineOpen(false)} 
+      <RefineBriefPanel
+        isOpen={isRefineOpen}
+        onClose={() => setIsRefineOpen(false)}
         project={selectedProject}
       />
     </DashboardLayout>

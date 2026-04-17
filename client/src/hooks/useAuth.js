@@ -6,7 +6,7 @@ export const useAuth = () => {
     name: '',
     email: 'user@gmail.com',
     password: '123456',
-    role: 'member', // default role for internal state
+    role: 'user', // default role: 'user' (Member)
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,9 +29,9 @@ export const useAuth = () => {
       const response = await loginUser({
         email: formData.email,
         password: formData.password,
+        role: formData.role, // Pass selected role to login
       });
       console.log('Login successful:', response);
-      // You might want to store tokens/user info here (localStorage, state, etc.)
       return true;
     } catch (err) {
       console.error('Login error:', err);
@@ -46,12 +46,6 @@ export const useAuth = () => {
   const signup = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
 
-    // Check if role is "team"
-    if (formData.role === 'team') {
-      setError('This section is under working');
-      return false;
-    }
-
     setLoading(true);
     setError(null);
 
@@ -60,7 +54,7 @@ export const useAuth = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: 'user', // Always pass "user" for member signup
+        role: formData.role, // Pass matching API role (user/admin)
       });
       console.log('Signup successful:', response);
       return true;

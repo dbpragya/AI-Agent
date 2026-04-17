@@ -8,9 +8,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { Mail, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CustomLoader from '../../components/common/CustomLoader';
+import RoleSwitcher from '../../components/auth/RoleSwitcher';
 
 const LoginPage = () => {
-  const { formData, loading, error, handleChange, login } = useAuth();
+  const { formData, loading, error, handleChange, handleRoleChange, login } = useAuth();
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -55,6 +56,13 @@ const LoginPage = () => {
           <ScanningLogo />
           
           <form onSubmit={handleSubmit}>
+            <div className="mb-6">
+              <RoleSwitcher
+                selectedRole={formData.role}
+                onRoleChange={handleRoleChange}
+              />
+            </div>
+
             <InputField
               id="email"
               label="Email"
