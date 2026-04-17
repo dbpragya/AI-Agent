@@ -7,7 +7,6 @@ import RoleSwitcher from '../../components/auth/RoleSwitcher';
 import { useAuth } from '../../hooks/useAuth';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import RobotLoader from '../../components/common/RobotLoader';
 
 const SignupPage = () => {
   const { formData, loading, error, handleChange, handleRoleChange, signup } = useAuth();
@@ -24,19 +23,15 @@ const SignupPage = () => {
   return (
     <AuthLayout>
       <div className="relative w-full max-w-md">
-        <RobotLoader 
-          isLoading={loading} 
-          message="Creating account..." 
-        />
-        
-        <AuthCard 
-          title="Sign Up" 
+
+        <AuthCard
+          title="Sign Up"
           subtitle="Create your account"
         >
           <form onSubmit={handleSubmit}>
-            <RoleSwitcher 
-              selectedRole={formData.role} 
-              onRoleChange={handleRoleChange} 
+            <RoleSwitcher
+              selectedRole={formData.role}
+              onRoleChange={handleRoleChange}
             />
 
             <motion.div
@@ -54,7 +49,7 @@ const SignupPage = () => {
                 required
               />
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
@@ -70,7 +65,7 @@ const SignupPage = () => {
                 required
               />
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
@@ -88,10 +83,10 @@ const SignupPage = () => {
             </motion.div>
 
             <div className="flex items-center gap-2 mb-6">
-              <input 
-                type="checkbox" 
-                id="terms" 
-                required 
+              <input
+                type="checkbox"
+                id="terms"
+                required
                 className="w-4 h-4 rounded border-white/10 bg-zinc-900 text-primary-cyan focus:ring-primary-cyan/50 focus:ring-offset-0"
               />
               <label htmlFor="terms" className="text-xs text-zinc-500">

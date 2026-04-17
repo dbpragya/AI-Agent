@@ -10,7 +10,6 @@ import ProjectForm from '../components/dashboard/ProjectForm';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { getSummary } from '../apis/project';
-import RobotLoader from '../components/common/RobotLoader';
 
 const DashboardPage = () => {
   const [view, setView] = useState('list'); // 'list', 'create', 'detail'
@@ -105,10 +104,7 @@ const DashboardPage = () => {
       header={renderHeader()}
     >
       <div className="relative h-full">
-        <RobotLoader 
-          isLoading={loading} 
-          message="Syncing your projects..." 
-        />
+
 
         <AnimatePresence mode="wait">
           {view === 'list' && !loading && (
