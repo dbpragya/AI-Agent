@@ -22,11 +22,14 @@ const authRoutes = require('./routes/authRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const dashboardRoutes = require('./routes/dashboard');
 const summaryRoutes = require('./routes/summaryRoutes');
+const projectsRoutes = require('./routes/projectsRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/summary', summaryRoutes);
+app.use('/api/projects', projectsRoutes);
+
 
 // Basic Route
 app.get('/', (req, res) => {

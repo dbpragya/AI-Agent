@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Upload = require('../models/Upload');
-const Chunk = require('../models/Chunk');
 const Groq = require('groq-sdk');
 const fs = require('fs');
 const path = require('path');
@@ -76,7 +75,7 @@ router.post('/', async (req, res) => {
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: "system", content: "You are an expert project analyst. Summarize this project in 200 words." },
+                { role: "system", content: "You are an expert project analyst. Summarize this project in 400 words." },
                 { role: "user", content: text.substring(0, 30000) }
             ],
             model: "llama-3.3-70b-versatile",
@@ -93,21 +92,40 @@ router.post('/features', async (req, res) => {
     try {
         const { projectId } = req.body;
         const upload = await Upload.findById(projectId);
+        if (!upload) return res.status(404).json({ status: "error", message: "Project not found" });
+
         const filePath = path.join(__dirname, '..', upload.file);
         const text = await extractTextFromFile(filePath, upload);
 
         const chatCompletion = await groq.chat.completions.create({
             messages: [
-                { role: "system", content: "List ONLY major technical module names as a bulleted list." },
+                { 
+                    role: "system", 
+                    content: "Analyze the project documentation and extract major technical modules. " +
+                             "Return ONLY a RAW JSON array of objects. Each object must have: " +
+                             "1. 'title': The module name (e.g., 'Authentication Core'). " +
+                             "2. 'features': An array of 4-6 specific feature strings. " +
+                             "3. 'screensCount': A realistic estimate of unique screens for this module. " +
+                             "Return ONLY the JSON array. No markdown, no explanations."
+                },
                 { role: "user", content: text.substring(0, 30000) }
             ],
             model: "llama-3.3-70b-versatile",
         });
 
-        const features = chatCompletion.choices[0]?.message?.content;
-        upload.features = features;
-        await upload.save();
-        res.json({ status: "success", data: features });
+        let featuresRaw = chatCompletion.choices[0]?.message?.content || "[]";
+        // Remove potential markdown code blocks
+        featuresRaw = featuresRaw.replace(/```json\n?|```/g, "").trim();
+        
+        try {
+            const features = JSON.parse(featuresRaw);
+            upload.features = JSON.stringify(features);
+            await upload.save();
+            res.json({ status: "success", data: features });
+        } catch (parseError) {
+            console.error("JSON Parse Error:", parseError, featuresRaw);
+            res.status(500).json({ status: "error", message: "Failed to parse AI response as JSON" });
+        }
     } catch (err) { res.status(500).json({ status: "error", message: err.message }); }
 });
 
