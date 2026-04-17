@@ -15,3 +15,13 @@ export const loginUser = async ({ email, password }) => {
   });
   return response.data;
 };
+
+/**
+ * Register a new user.
+ * @param {Object} userData - The registration data.
+ * @returns {Promise<Object>} The server response.
+ */
+export const registerUser = async (userData) => {
+  const response = await apiClient.post('/auth/register', userData);
+  return response.data;
+};

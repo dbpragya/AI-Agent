@@ -13,6 +13,9 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
     },
+    name: {
+        type: String,
+    },
     createdAt: {
         type: Date,
         default: Date.now
